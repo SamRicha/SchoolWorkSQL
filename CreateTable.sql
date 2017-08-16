@@ -1,51 +1,109 @@
-use metroalt
+/*
+ Use metro Alt
+ Add the following tables to metroAlt with the following columns and constraints
+*/
 
-create table BusService
+USE MetroAlt
+
+/*
+    1. 
+    BusService
+    BusServiceKey int identity primary key
+    BusServiceName variable character, required
+    BusServiceDescription variable character
+*/
+
+CREATE TABLE BusService
 (
-BusServiceKey int identity (1,1) not null,
-BusServiceName varchar(255) not null,
-BusServiceDescription varchar(255),
+BusServiceKey INT identity (1,1) NOT NULL,
+BusServiceName VARCHAR(255) NOT NULL,
+BusServiceDescription VARCHAR(255),
 );
 
-create table Maintenance
+/*
+    2.
+    Maintenance
+    MaintenanceKey int, an identity, primary key
+    MainenanceDate Date, required
+    Buskey int foreign key related to Bus, required
+*/
+
+CREATE TABLE Maintenance
 (
-MaintenanceKey int identity (1,1) not null,
-MaintenanceDate date not null,
-BusKey int not null,
+MaintenanceKey INT identity (1,1) NOT NULL,
+MaintenanceDate DATE NOT NULL,
+BusKey INT NOT NULL,
 );
 
-create table MaintenanceDetail
+/*
+    3.
+    MaintenanceDetail (we will use Alter table statements to add Keys to this table)
+    MaintenanceDetailKey int identity 
+    Maintenancekey int  required
+    EmployeeKey int  required
+    BusServiceKey int  required
+    MaintenanceNotes  variable character
+*/
+
+CREATE TABLE MaintenanceDetail
 (
-MaintenanceDetailKey int identity (1,1) not null,
-MaintenanceKey int not null,
-EmployeeKey int not null,
-BusServiceKey int not null,
-MaintenanceNotes varchar(255),
+MaintenanceDetailKey INT identity (1,1) NOT NULL,
+MaintenanceKey INT NOT NULL,
+EmployeeKey INT NOT NULL,
+BusServiceKey INT NOT NULL,
+MaintenanceNotes VARCHAR(255),
 );
 
-alter table MaintenanceDetail
-Add constraint PK_MaintenanceDetail primary key (MaintenanceDetailKey)
+/*
+    4.
+    Use alter table to add a primary key constraint to Maintenance detail setting MaintenanceDetailKey as the primary key
+*/
 
-alter table Maintenance
-Add constraint PK_Maintenance primary key (MaintenanceKey)
+ALTER TABLE MaintenanceDetail
+ADD CONSTRAINT PK_MaintenanceDetail PRIMARY KEY (MaintenanceDetailKey)
 
-alter table BusService
-Add constraint PK_BusService primary key (BusServiceKey)
+ALTER TABLE Maintenance
+ADD CONSTRAINT PK_Maintenance PRIMARY KEY (MaintenanceKey)
 
-alter table MaintenanceDetail
-add constraint FK_Maintenance foreign key (MaintenanceKey)
-references Maintenance(MaintenanceKey)
+ALTER TABLE BusService
+ADD CONSTRAINT PK_BusService PRIMARY KEY (BusServiceKey)
 
-alter table MaintenanceDetail
-add constraint FK_Employee foreign key (EmployeeKey)
-references Employee(EmployeeKey)
+/*
+    5.
+    Use alter table to set MaintenceKey as a foreign key
+    Use alter table to set EmployeeKey as a foreign key
+*/
 
-alter table MaintenanceDetail
-add constraint FK_BusService foreign key (BusServiceKey)
-references BusService(BusServiceKey)
+ALTER TABLE MaintenanceDetail
+ADD CONSTRAINT FK_Maintenance FOREIGN KEY (MaintenanceKey)
+REFERENCES Maintenance(MaintenanceKey)
 
-alter table BusType
-add BusTypeAccessible bit
+ALTER TABLE MaintenanceDetail
+ADD CONSTRAINT FK_Employee FOREIGN KEY (EmployeeKey)
+REFERENCES Employee(EmployeeKey)
 
-alter table Employee
-add constraint unique_email unique(EmployeeEmail)
+/*
+    6.
+    Use alter table to set BusServiceKey as a foreign key
+*/
+
+ALTER TABLE MaintenanceDetail
+ADD CONSTRAINT FK_BusService FOREIGN KEY (BusServiceKey)
+REFERENCES BusService(BusServiceKey)
+
+
+/*
+    7.
+    Add a column to BusType named BusTypeAccessible. Its data type should be bit 0 for no and 1 for yes.
+*/
+
+ALTER TABLE BusType
+ADD BusTypeAccessible BIT
+
+/*
+    8.
+    Use alter table to Add a constraint to email in the Employee table to make sure each email is unique
+*/
+
+ALTER TABLE Employee
+ADD CONSTRAINT unique_email UNIQUE(EmployeeEmail)
