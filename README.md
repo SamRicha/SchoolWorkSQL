@@ -1,5 +1,5 @@
 # SchoolWorkSQL
-Some classwork from ITC 220, ITC 222, and ITC 226
+Some classwork from ITC 220 Database Development, ITC 222 SQL, and ITC 226 Database Administration
 
 I used SQL Server 2014 Management Studio, SQL Server Enterprise Edition
 
