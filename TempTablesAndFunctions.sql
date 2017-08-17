@@ -2,86 +2,86 @@
     1. Create a temp table to show how many stops each route has. the table should have fields for the route number and the number of stops. Insert into it from BusRouteStops and then select from the temp table.
 */
 
-CREATE table #busstopcount
+CREATE TABLE #BusStopCount
 (
-routekey int,
-routeamount int
+RouteKey INT,
+RouteAmount INT
 )
-insert into #busstopcount(routekey,routeamount) 
-select BusRouteKey,sum(BusRouteStopKey) as [Bus Stop Amount]
-from busroutestops
-group by BusRouteKey
-order by BusRouteKey
+INSERT INTO #BusStopCount(RouteKey,RouteAmount) 
+SELECT BusRouteKey,SUM(BusRouteStopKey) AS [Bus Stop Amount]
+FROM BusRouteStops
+GROUP BY BusRouteKey
+ORDER BY BusRouteKey
 
 /*
     2.Do the same but using a global temp table.
 */
 
-CREATE table ##globalbusstopcount
+CREATE TABLE ##GlobalBusStopCount
 (
-routekey int,
-routeamount int
+RouteKey INT,
+RouteAmount INT
 )
-insert into ##globalbusstopcount(routekey,routeamount) 
-select BusRouteKey,sum(BusRouteStopKey) as [Bus Stop Amount]
-from busroutestops
-group by BusRouteKey
+INSERT INTO ##GlobalBusStopCount(RouteKey,RouteAmount) 
+SELECT BusRouteKey,SUM(BusRouteStopKey) AS [Bus Stop Amount]
+FROM BusRouteStops
+GROUP BY BusRouteKey
 
 /*
-    3.CREATE a function to CREATE an employee email address. Every employee Email follows the pattern of "firstName.lastName@metroalt.com"
+    3.CREATE a function to CREATE an Employee email address. Every Employee Email follows the pattern of "firstName.lastName@metroalt.com"
 */
 
-CREATE function fx_email
-(@firstname nvarchar(255),
-@lastname nvarchar(255))
-returns nvarchar(255)
-As
-Begin
-Declare @email nvarchar(255)
-Set @email=@firstname +'.'+ @lastname +'@metroalt.com'
-return @email
-End
-go
+CREATE FUNCTION fx_Email
+(@FirstName nvarchar(255),
+@LastName nvarchar(255))
+RETURNS nvarchar(255)
+AS
+BEGIN
+DECLARE @Email nvarchar(255)
+SET @Email=@FirstName +'.'+ @LastName +'@metroalt.com'
+RETURN @Email
+END
+GO
 
-select dbo.fx_email(employee.employeefirstname,employee.employeelastname) as email
-from employee
+SELECT dbo.fx_Email(Employee.EmployeeFirstName,Employee.EmployeeLastName) AS Email
+FROM Employee
 
 /*
-    4.CREATE a function to determine a two week pay check of an individual employee.
+    4.CREATE a function to determine a two week pay check of an individual Employee.
 */
 
-go
-CREATE function fx_TwoWeek
-(@payrate int
+GO
+CREATE FUNCTION fx_TwoWeek
+(@PayRate INT
 )
-returns int
-as begin
-declare @twoweektotal int
-set @twoweektotal= @payrate * 40 * 2
-return @twoweektotal
-end
-go
+RETURNS INT
+AS BEGIN
+DECLARE @TwoWeekTotal INT
+SET @TwoWeekTotal= @PayRate * 40 * 2
+RETURN @TwoWeekTotal
+END
+GO
 
-select employee.employeekey,dbo.fx_twoweek(employeehourlypayrate) as [Two week pay]
-from employee
-inner join employeeposition
-on employeeposition.employeekey=employee.employeekey
+SELECT Employee.Employeekey,dbo.fx_TwoWeek(EmployeeHourlyPayRate) AS [Two week pay]
+FROM Employee
+INNER JOIN EmployeePosition
+ON EmployeePosition.EmployeeKey=Employee.EmployeeKey
 
 /*
-    5.CREATE a function to determine a hourly rate for a new employee. Take difference between top and bottom pay for the new employees position (say driver) and then subtract the difference from the maximum pay. (and yes this is very arbitrary).
+    5.CREATE a function to determine a hourly rate for a new Employee. Take difference between top and bottom pay for the new Employees position (say driver) and then subtract the difference from the maximum pay. (and yes this is very arbitrary).
 */
 
-go
-alter function fx_payestimate
-(@pay money
+GO
+ALTER FUNCTION fx_PayEstimate
+(@Pay money
 )
-returns money
-as 
-begin
-declare @payrate money
-set @payrate=  max(@pay) - (max(@pay) - min(@pay))
-return @payrate
-end
-go
+RETURNS money
+AS 
+BEGIN
+DECLARE @PayRate money
+SET @PayRate=  MAX(@Pay) - (MAX(@Pay) - MIN(@Pay))
+RETURN @PayRate
+END
+GO
 
 
